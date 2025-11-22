@@ -1,0 +1,140 @@
+{% extends '_global.html' %}
+
+{% block title %}Dataset{% endblock %}
+{% block content %}
+    <div class="content-card">
+        <h4 class="mb-3">
+            Modèle de classification
+        </h4>
+        
+        <div class="row">
+            <div class="col-md-6">
+                {% if graph1 %}
+                <img width="100%" src="data:image/png;base64,{{ graph1 }}" alt="Graphique">
+                {% endif %}
+
+                
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4 text-blue">
+                            <i class="bi bi-bar-chart-fill me-2"></i>Statistiques des données
+                        </h5>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex  align-items-center border-0 px-0">
+                                <span class="fw-semibold text-secondary">
+                                    <i class="bi bi-file-earmark-text me-2 text-info"></i>Nombre de lignes
+                                </span>
+                                <span class="badge bg-info rounded-pill fs-6 px-3 py-2 margin-left">{{ count1 }}</span>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center border-0 px-0">
+                                <span class="fw-semibold text-secondary">
+                                    <i class="bi bi-collection me-2 text-success" ></i>Nombre de classes
+                                </span>
+                                <span class="badge bg-success rounded-pill fs-6 px-3 py-2 margin-left">{{ nbClasses1 }}</span>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center border-0 px-0">
+                                <span class="fw-semibold text-secondary">
+                                    <i class="bi bi-graph-up me-2 text-warning"></i>Variation maximale
+                                </span>
+                                <span class="badge bg-warning text-dark rounded-pill fs-6 px-3 py-2 margin-left">{{ "%.2f"|format(var1) }}</span>
+                            </div>
+                        </div>
+                        {% if var1 > 0.2 %}
+                        <div class="alert alert-warning margin" role="alert">
+                        Attention, les classes ne sont pas équilibrées. <br/>Ce déséquilibre peut provoquer des anomalies lors de l'entraînement.
+                        </div>
+                        {% endif %}
+                        {% if var1 < 0.2 %}
+                        <div class="alert alert-success margin" role="alert">
+                        Les classes sont équilibrées
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="content-card margin">
+        <h4 class="mb-3">
+            Modèle NER
+        </h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% if graph2 %}
+                <img width="100%" src="data:image/png;base64,{{ graph2 }}" alt="Graphique">
+                {% endif %}
+
+                
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4 text-blue">
+                            <i class="bi bi-bar-chart-fill me-2"></i>Statistiques des données
+                        </h5>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex  align-items-center border-0 px-0">
+                                <span class="fw-semibold text-secondary">
+                                    <i class="bi bi-file-earmark-text me-2 text-info"></i>Nombre de lignes
+                                </span>
+                                <span class="badge bg-info rounded-pill fs-6 px-3 py-2 margin-left">{{ count2 }}</span>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center border-0 px-0">
+                                <span class="fw-semibold text-secondary">
+                                    <i class="bi bi-collection me-2 text-success" ></i>Nombre de classes
+                                </span>
+                                <span class="badge bg-success rounded-pill fs-6 px-3 py-2 margin-left">{{ nbClasses2 }}</span>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center border-0 px-0">
+                                <span class="fw-semibold text-secondary">
+                                    <i class="bi bi-graph-up me-2 text-warning"></i>Variation maximale
+                                </span>
+                                <span class="badge bg-warning text-dark rounded-pill fs-6 px-3 py-2 margin-left">{{ "%.2f"|format(var2) }}</span>
+                            </div>
+                        </div>
+                        {% if var2 > 0.2 %}
+                        <div class="alert alert-warning margin" role="alert">
+                        Attention, les classes ne sont pas équilibrées. <br/>Ce déséquilibre peut provoquer des anomalies lors de l'entraînement.
+                        </div>
+                        {% endif %}
+                        {% if var2 < 0.2 %}
+                        <div class="alert alert-success margin" role="alert">
+                        Les classes sont équilibrées
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+            <div class="row margin">
+                <div class="col-md-6">
+                    {% if graph3 %}
+                    <img width="100%"  src="data:image/png;base64,{{ graph3 }}" alt="Graphique">
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                   {% if graph4 %}
+                    <img width="100%"  src="data:image/png;base64,{{ graph4 }}" alt="Graphique">
+                    {% endif %}
+                </div>
+            </div>
+        
+
+        
+
+        
+
+        
+    </div>
+    
+    
+{% endblock %}

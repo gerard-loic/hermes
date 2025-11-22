@@ -13,62 +13,77 @@ class NamedEntityRecognition:
 
     def train(self):
         Log.write("Start Named Entity Recognition model training...")
-        #On définit les nouveaux labels
-        new_labels = [ 
-            "NOTATION"
-        ]
-
-        #On récupère les données et on prépare
+        
+        new_labels = ["notation", "essai"]
+        
         dl = DataLoader(envName=self.envName)
         train_data = dl.getDataForNer(randomization=False)
+        self.validate_training_data(train_data)
         nlp = spacy.load("fr_core_news_lg")
 
-        #Ajouter ner dans le pipeline
-        #Cette partie vérifie si le pipeline spaCy contient déjà un composant NER :
-        #Si non : on ajoute un nouveau composant NER vierge au pipeline
-        #Si oui : on récupère le composant NER existant (pour ne pas le dupliquer)
-
         if 'ner' not in nlp.pipe_names:
-            ner = nlp.add_pipe('ner')
+            ner = nlp.add_pipe('ner', last=True)
         else:
             ner = nlp.get_pipe('ner')
 
+        # Ajouter les labels explicitement
+        for label in new_labels:
+            ner.add_label(label)
+        
+        # Vérifier aussi les labels dans les données
+        for text, annotations in train_data:
+            if "entities" in annotations:
+                for ent in annotations['entities']:
+                    if ent[2] not in ner.labels:
+                        ner.add_label(ent[2])
 
-        #Cette boucle parcourt vos données d'entraînement pour déclarer tous les types d'entités possibles :
-        #train_data contient des paires (texte, annotations)
-        #annotations['entities'] est une liste de tuples comme (début, fin, label)
-        #ent[2] récupère le label (par exemple "PERSONNE", "LIEU", "ORGANISATION")
-        #ner.add_label(ent[2]) déclare ce type d'entité au modèle
-        #Pourquoi c'est nécessaire ? Le modèle doit connaître à l'avance tous les types d'entités qu'il devra prédire.
-
-        for data_sample, annotations in train_data:
-            for ent in annotations['entities']:
-                if ent[2] not in ner.labels:
-                    ner.add_label(ent[2])
-
-
-        #Disable other pipes (such as classification, POS Tagging, etc)
         other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
         
         with nlp.disable_pipes(*other_pipes):
-            optimizer = nlp.resume_training()
-            epochs = 30
+            # Initialiser l'optimiseur correctement
+            optimizer = nlp.initialize()
+            
+            # AUGMENTER le nombre d'époques et ajuster le dropout
+            epochs = 50  # Augmenté de 30 à 50
+            batch_size = 8  # RÉDUIRE la taille des batchs (était 128)
+            
             for epoch in range(epochs):
-                random.shuffle(train_data) # shuffling the dataset for each epoch 
+                random.shuffle(train_data)
                 losses = {}
-                batches = minibatch(train_data, size = 128)
+                batches = minibatch(train_data, size=batch_size)
+                
                 for batch in batches:
                     examples = []
-                    for text, annotations in  batch:
+                    for text, annotations in batch:
                         doc = nlp.make_doc(text)
                         example = Example.from_dict(doc, annotations)
                         examples.append(example)
-                    nlp.update(examples, drop = 0.15, losses = losses)
+                    
+                    # Réduire le dropout pour mieux apprendre
+                    nlp.update(examples, drop=0.2, losses=losses, sgd=optimizer)
+                
                 Log.write(f'Epoch : {epoch + 1}, Loss : {losses}')
 
         Log.write(f"Sauvegarde du modèle dans environnements/{self.envName}/models/ner")
         nlp.to_disk(f"environnements/{self.envName}/models/ner")
         Log.write("Modèle sauvegardé !")
+
+    def validate_training_data(self, train_data):
+        """Vérifie la qualité des annotations"""
+        multi_entity_count = 0
+        
+        for text, annotations in train_data:
+            entities = annotations.get('entities', [])
+            if len(entities) > 1:
+                multi_entity_count += 1
+            
+            # Vérifier les chevauchements
+            sorted_ents = sorted(entities, key=lambda x: x[0])
+            for i in range(len(sorted_ents) - 1):
+                if sorted_ents[i][1] > sorted_ents[i+1][0]:
+                    Log.write(f"⚠️ Chevauchement détecté : {text}")
+        
+        Log.write(f"Phrases avec plusieurs entités : {multi_entity_count}/{len(train_data)}")
 
     def load(self):
         Log.write("Load Named Entity Recognition Model...")

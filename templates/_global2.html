@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Template</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+        
+        /* Barre de titre */
+        .top-navbar {
+            background-color: #1a1d20;
+            color: white;
+            padding: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border-bottom: 1px solid #2d3238;
+        }
+        
+        /* Menu latéral */
+        .sidebar {
+            min-height: calc(100vh - 60px);
+            background-color: #212529;
+            padding: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            border-right: 1px solid #2d3238;
+        }
+        
+        .sidebar .nav-link {
+            color: #adb5bd;
+            padding: 1rem 1.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: #1a1d20;
+            border-left-color: #0d6efd;
+            color: #fff;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: #1a1d20;
+            border-left-color: #0d6efd;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+        
+        .sidebar hr {
+            border-color: #495057 !important;
+        }
+        
+        /* Zone de contenu */
+        .main-content {
+            padding: 2rem;
+            background-color: #1a1d20;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .content-card {
+            background: #212529;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border: 1px solid #2d3238;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    {% include 'fragments/_header.html' %}
+
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'fragments/_sidemenu.html' %}
+
+
+            <!-- Zone de contenu principale -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="content-card">
+                    <h2 class="mb-4">
+                        <i class="bi bi-speedometer2 text-primary"></i>
+                        Tableau de bord
+                        {% block title %} {% endblock %}
+                    </h2>
+
+                    {% block content %} {% endblock %}
+                    
+                    <!-- Statistiques -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">
+                                        <i class="bi bi-people"></i> Utilisateurs
+                                    </h5>
+                                    <h3 class="mb-0">1,245</h3>
+                                    <small class="text-muted">+12% ce mois</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success">
+                                        <i class="bi bi-folder"></i> Projets
+                                    </h5>
+                                    <h3 class="mb-0">87</h3>
+                                    <small class="text-muted">+5% ce mois</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <h5 class="card-title text-warning">
+                                        <i class="bi bi-clock"></i> En attente
+                                    </h5>
+                                    <h3 class="mb-0">23</h3>
+                                    <small class="text-muted">Nécessitent une action</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulaire exemple -->
+                    <div class="mt-4">
+                        <h4 class="mb-3">
+                            <i class="bi bi-pencil-square text-success"></i>
+                            Formulaire d'ajout
+                        </h4>
+                        
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nom" class="form-label">Nom <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="nom" placeholder="Entrez le nom" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="prenom" placeholder="Entrez le prénom" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="email" placeholder="exemple@email.com" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="telephone" class="form-label">Téléphone</label>
+                                    <input type="tel" class="form-control" id="telephone" placeholder="+33 6 12 34 56 78">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Rôle <span class="text-danger">*</span></label>
+                                <select class="form-select" id="role" required>
+                                    <option value="">Sélectionnez un rôle</option>
+                                    <option value="admin">Administrateur</option>
+                                    <option value="user">Utilisateur</option>
+                                    <option value="guest">Invité</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" rows="3" placeholder="Ajoutez une description..."></textarea>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="actif">
+                                <label class="form-check-label" for="actif">
+                                    Compte actif
+                                </label>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="newsletter">
+                                <label class="form-check-label" for="newsletter">
+                                    S'abonner à la newsletter
+                                </label>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Enregistrer
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Réinitialiser
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tableau exemple -->
+                    <div class="mt-5">
+                        <h4 class="mb-3">
+                            <i class="bi bi-table text-info"></i>
+                            Données récentes
+                        </h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Rôle</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Dupont Martin</td>
+                                        <td>martin.dupont@example.com</td>
+                                        <td><span class="badge bg-primary">Admin</span></td>
+                                        <td><span class="badge bg-success">Actif</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Bernard Sophie</td>
+                                        <td>sophie.bernard@example.com</td>
+                                        <td><span class="badge bg-info">User</span></td>
+                                        <td><span class="badge bg-success">Actif</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Petit Thomas</td>
+                                        <td>thomas.petit@example.com</td>
+                                        <td><span class="badge bg-secondary">Guest</span></td>
+                                        <td><span class="badge bg-warning">En attente</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Gestion de la navigation active
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Retirer la classe active de tous les liens
+                document.querySelectorAll('.sidebar .nav-link').forEach(l => {
+                    l.classList.remove('active');
+                });
+                
+                // Ajouter la classe active au lien cliqué
+                this.classList.add('active');
+                
+                // Ici vous pouvez ajouter la logique pour charger le contenu correspondant
+                console.log('Navigation vers:', this.textContent.trim());
+            });
+        });
+        
+        // Validation du formulaire
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (this.checkValidity()) {
+                alert('Formulaire soumis avec succès !');
+                // Ici vous pouvez ajouter la logique d'envoi au serveur
+            } else {
+                alert('Veuillez remplir tous les champs obligatoires.');
+            }
+        });
+    </script>
+</body>
+</html>

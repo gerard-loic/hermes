@@ -11,6 +11,9 @@ class DataLoader:
         self.classes = []
         self.load()
 
+    def getData(self, classe:str):
+        return self.data[classe]
+
     def load(self):
         #Chargement des classes
         repertoire = Path(f"environnements/{self.envName}/rawdata")
@@ -89,4 +92,3 @@ class DataLoader:
             random.shuffle(data)
 
         return data
-        

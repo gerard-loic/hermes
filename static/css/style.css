@@ -1,0 +1,105 @@
+body {
+            overflow-x: hidden;
+        }
+        
+        /* Barre de titre */
+        .top-navbar {
+            background-color: #1a1d20;
+            color: white;
+            padding: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border-bottom: 1px solid #2d3238;
+        }
+        
+        /* Menu latéral */
+        .sidebar {
+            min-height: calc(100vh - 60px);
+            background-color: #212529;
+            padding: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            border-right: 1px solid #2d3238;
+        }
+        
+        .sidebar .nav-link {
+            color: #adb5bd;
+            padding: 1rem 1.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: #1a1d20;
+            border-left-color: #0d6efd;
+            color: #fff;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: #1a1d20;
+            border-left-color: #0d6efd;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+        
+        .sidebar hr {
+            border-color: #495057 !important;
+        }
+        
+        /* Zone de contenu */
+        .main-content {
+            padding: 2rem;
+            background-color: #1a1d20;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .content-card {
+            background: #212529;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border: 1px solid #2d3238;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+            }
+        }
+
+.margin{
+    margin-top:20px;
+}
+
+.text-blue{
+    color: #0FA5E4;
+}
+
+.text-purple{
+    color: #6060C4;
+
+}
+
+.back-blue{
+    background-color: #0FA5E4;
+}
+
+.back-purple{
+    background-color: #6060C4;
+
+}
+
+.margin-left{
+    margin-left: 20px;
+}
+
+.title-button{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px
+}

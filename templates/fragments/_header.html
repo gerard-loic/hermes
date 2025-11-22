@@ -1,0 +1,28 @@
+<!-- Barre de titre -->
+    <nav class="top-navbar">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <a href="{{ url_for('index')}}">
+                        <img src="{{ url_for('static', filename='images/hermes.svg') }}" alt="Logo" style="height: 60px;">
+                    </a>
+                </h4>
+                <div class="d-flex align-items-center">
+                    <span class="me-3">
+                        <i class="bi bi-bell"></i>
+                    </span>
+                    <div class="dropdown">
+                        <button class="btn btn-link text-white text-decoration-none dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> Utilisateur
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Paramètres</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i> Déconnexion</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Template</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+</head>
+<body>
+    
+    {% include 'fragments/_header.html' %}
+
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'fragments/_sidemenu.html' %}
+
+
+            <!-- Zone de contenu principale -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <h1 class="mb-4">
+                    {% block title %} {% endblock %} 
+                </h1>
+                {% block content %} {% endblock %}
+                
+            </main>
+        </div>
+    </div>
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Récupérer le chemin de l'URL actuelle (sans le domaine)
+        const currentPath = window.location.pathname;
+        
+        // Retirer la classe 'active' de tous les liens
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Mapping entre les chemins URL et les classes CSS
+        const urlToClassMap = {
+            '/dashboard': 'dashboard',
+            '/cleapi': 'cleapi',
+            '/donneesentrainement': 'donneesentrainement',
+            '/entrainementmodeles': 'entrainementmodeles',
+            '/integrationfeedback': 'integrationfeedback',
+            '/validation': 'validation',
+            '/testeurcommande': 'testeurcommande'
+        };
+        
+        // Trouver la classe correspondant à l'URL actuelle
+        let activeClass = null;
+        for (const [path, className] of Object.entries(urlToClassMap)) {
+            if (currentPath.includes(path)) {
+                activeClass = className;
+                break;
+            }
+        }
+        console.log(activeClass)
+        
+        // Ajouter la classe 'active' au lien correspondant
+        if (activeClass) {
+            const activeLink = document.querySelector(`.sidebar .nav-link.${activeClass}`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+    });
+    </script>
+
+</body>
+</html>

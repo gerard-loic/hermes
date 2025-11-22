@@ -1,0 +1,277 @@
+{% extends '_global.html' %}
+
+{% block title %}<i class="bi bi-play-circle-fill"></i> Jeu de validation{% endblock %}
+
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="mb-4">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCommandModal">
+        <i class="bi bi-plus-circle"></i> Ajouter une commande
+    </button>
+</div>
+
+<!-- Tableau des commandes -->
+<div class="table-responsive">
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Commande</th>
+                <th>Classe</th>
+                <th>Labels</th>
+                <th style="width: 150px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="commandsTableBody">
+                {% for index, command in data.iterrows() %}
+                <tr data-id="{{ command.id }}">
+                    <td>{{ command.id }}</td>
+                    <td>{{ command.command }}</td>
+                    <td><span class="badge bg-info">{{ command.className }}</span></td>
+                    <td>{{ command.labels }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editCommand({{ command.id }})">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCommand({{ command.id }})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+           
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Ajout -->
+<div class="modal fade" id="addCommandModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle text-primary"></i> Ajouter une commande
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addCommandForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="addCommand" class="form-label">Commande *</label>
+                        <input type="text" class="form-control" id="addCommand" name="command" required 
+                               placeholder='Ex: "Je veux exporter la notation 3536"'>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addClassName" class="form-label">Classe *</label>
+                        <input type="text" class="form-control" id="addClassName" name="className" required 
+                               placeholder='Ex: "export_notation"'>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addLabels" class="form-label">Labels *</label>
+                        <input type="text" class="form-control" id="addLabels" name="labels" required 
+                               placeholder='Ex: "notation:3536"'>
+                        <small class="form-text text-muted">Format: clé:valeur ou texte simple</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Modification -->
+<div class="modal fade" id="editCommandModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil text-warning"></i> Modifier la commande
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editCommandForm">
+                <input type="hidden" id="editCommandId" name="id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editCommand" class="form-label">Commande *</label>
+                        <input type="text" class="form-control" id="editCommand" name="command" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editClassName" class="form-label">Classe *</label>
+                        <input type="text" class="form-control" id="editClassName" name="className" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLabels" class="form-label">Labels *</label>
+                        <input type="text" class="form-control" id="editLabels" name="labels" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save"></i> Mettre à jour
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Toast pour les notifications -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="notificationToast" class="toast" role="alert">
+        <div class="toast-header">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <strong class="me-auto">Notification</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            Opération effectuée avec succès
+        </div>
+    </div>
+</div>
+
+
+<script>
+// Variables globales
+
+const addModal = new bootstrap.Modal(document.getElementById('addCommandModal'));
+const editModal = new bootstrap.Modal(document.getElementById('editCommandModal'));
+const toast = new bootstrap.Toast(document.getElementById('notificationToast'));
+
+// Fonction pour afficher une notification
+function showNotification(message, type = 'success') {
+    const toastEl = document.getElementById('notificationToast');
+    const toastIcon = toastEl.querySelector('.toast-header i');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    // Changer l'icône selon le type
+    toastIcon.className = type === 'success' 
+        ? 'bi bi-check-circle-fill text-success me-2' 
+        : 'bi bi-exclamation-triangle-fill text-danger me-2';
+    
+    toastMessage.textContent = message;
+    toast.show();
+}
+
+// Ajout d'une commande
+document.getElementById('addCommandForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    fetch('/api/commands', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showNotification('Commande ajoutée avec succès');
+            addModal.hide();
+            this.reset();
+            // Recharger la page pour afficher la nouvelle commande
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Erreur lors de l\'ajout', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        showNotification('Erreur de communication avec le serveur', 'error');
+    });
+});
+
+// Charger les données pour modification
+function editCommand(id) {
+    fetch(`/validationset/${id}`)
+        .then(response => response.json())
+        .then(command => {
+            document.getElementById('editCommandId').value = command.id;
+            document.getElementById('editCommand').value = command.command;
+            document.getElementById('editClassName').value = command.className;
+            document.getElementById('editLabels').value = command.labels;
+            editModal.show();
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showNotification('Erreur lors du chargement des données', 'error');
+        });
+}
+
+// Modification d'une commande
+document.getElementById('editCommandForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    const id = data.id;
+    
+    fetch(`/api/commands/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showNotification('Commande mise à jour avec succès');
+            editModal.hide();
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Erreur lors de la modification', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        showNotification('Erreur de communication avec le serveur', 'error');
+    });
+});
+
+// Suppression d'une commande
+function deleteCommand(id) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')) {
+        fetch(`/api/commands/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showNotification('Commande supprimée avec succès');
+                // Supprimer la ligne du tableau
+                const row = document.querySelector(`tr[data-id="${id}"]`);
+                if (row) {
+                    row.remove();
+                }
+                
+                // Vérifier si le tableau est vide
+                const tbody = document.getElementById('commandsTableBody');
+                if (tbody.children.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Aucune commande enregistrée</td></tr>';
+                }
+            } else {
+                showNotification('Erreur lors de la suppression', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showNotification('Erreur de communication avec le serveur', 'error');
+        });
+    }
+}
+</script>
+
+
+{% endblock %}

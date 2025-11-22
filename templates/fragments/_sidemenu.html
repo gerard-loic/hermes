@@ -1,0 +1,55 @@
+<!-- Menu latéral -->
+<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active dashboard" href="#dashboard">
+                <i class="bi bi-speedometer2"></i>
+                Tableau de bord
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link cleapi" href="#users">
+                <i class="bi bi-key"></i>
+                Clés d'API
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link donneesentrainement" href="{{ url_for('donneesentrainement')}}">
+                <i class="bi bi-database"></i>
+                Dataset
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link entrainementmodeles" href="{{ url_for('entrainementmodeles')}}">
+                <i class="bi bi-graph-up"></i>
+                Modèle de classification
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link modelener" href="">
+                <i class="bi bi-graph-up"></i>
+                Modèle NER
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link integrationfeedback" href="#reports">
+                <i class="bi bi-chat-square-heart-fill"></i>
+                Intégration des feedbacks
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link validation" href="{{ url_for('validationset')}}">
+                <i class="bi bi-check-circle-fill"></i>
+                Jeu de validation
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link testeurcommande" href="{{ url_for('testeurcommandes')}}">
+                <i class="bi bi-play-circle-fill"></i>
+                Testeur de commandes
+                </a>
+            </li>
+        </ul>           
+    </div>
+</nav>
