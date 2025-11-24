@@ -93,6 +93,14 @@ body {
 
 }
 
+.back-green{
+    background-color: green;
+}
+
+.back-red{
+    background-color: red;
+}
+
 .margin-left{
     margin-left: 20px;
 }

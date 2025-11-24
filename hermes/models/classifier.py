@@ -13,12 +13,12 @@ from tqdm import tqdm
 from hermes.models.trainstats import TrainStats
 from hermes.appz.trainingqueue import TrainingQueue
 from hermes.appz.entrainementmodeles import EntrainementModeles
+from hermes.models.model import Model
 
-class Classifier:
+class Classifier(Model):
     def __init__(self, envName:str, trainingQueueSessionId:str=None):
+        super().__init__(envName=envName, trainingQueueSessionId=trainingQueueSessionId)
         print("Classifier")
-        self.envName = envName
-        self.trainingQueueSessionId = trainingQueueSessionId
 
     def train(self, epochs=5):
         Log.write("Start classifier model training...")

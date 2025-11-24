@@ -33,46 +33,76 @@ TrainingQueue.init()
 def index():
     return render_template('index.html')
 
+@app.template_filter('fromjson')
+def fromjson_filter(value):
+    return json.loads(value)
+
+######################################################################################
+
 @app.route('/donneesentrainement')
 def donneesentrainement():
     r = DonneesEntrainement(envName="default")
     return r.render()
 
+######################################################################################
 
 @app.route('/testeurcommandes')
 def testeurcommandes():
     r = TesteurCommandes(envName="default")
     return r.render()
 
+######################################################################################
+
 @app.route('/validationset')
 def validationset():
-    r = ValidationSet(envName="default")
-    return r.render()
+    score = request.args.get('score')
+
+    r = ValidationSet(envName="default") 
+    if(score):
+        return r.render(score=True)
+    else:
+        return r.render()
 
 @app.route('/validationset', methods=['POST'])
-def add_command():
+def validationset_post():
+    data = request.get_json()
+    r = ValidationSet(envName="default")
+    return r.exec_postCommand(data=data)
     try:
         data = request.get_json()
-        # Logique pour ajouter la commande
-        # Par exemple, ajouter à votre DataFrame et sauvegarder
-        return jsonify({'success': True})
+        r = ValidationSet(envName="default")
+        return r.exec_postCommand(data=data)
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/validationset/<int:id>', methods=['GET'])
-def get_command(id):
+def validationset_get(id):
     r = ValidationSet(envName="default")
     return r.exec_getCommand(id)
 
 @app.route('/validationset/<int:id>', methods=['PUT'])
-def update_command(id):
-    # Logique pour modifier une commande
-    pass
+def validationset_put(id):
+    try:
+        data = request.get_json()
+        
+        r = ValidationSet(envName="default")
+        return r.exec_putCommand(id, data)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/validationset/<int:id>', methods=['DELETE'])
-def delete_command(id):
-    # Logique pour supprimer une commande
-    pass
+def validationset_delete(id):
+    try:
+        r = ValidationSet(envName="default")
+        return r.exec_deleteCommand(id)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+    
+@app.route('/validationset/classes', methods=['GET'])
+def validationset_get_classes():
+    r = ValidationSet(envName="default")
+    return r.exec_getClasses()
+
 
 @app.route('/testeurcommandes/commande', methods=['POST'])
 def testeurcommandes_commande():
